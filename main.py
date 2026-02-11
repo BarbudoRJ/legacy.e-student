@@ -8,6 +8,13 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# --- INICIALIZAÇÃO DO ESTADO (SESSION STATE) ---
+if 'is_student_active' not in st.session_state:
+    st.session_state.is_student_active = False
+
+def toggle_discount():
+    st.session_state.is_student_active = not st.session_state.is_student_active
+
 # --- ESTILIZAÇÃO CSS ---
 st.markdown("""
 <style>
@@ -22,33 +29,18 @@ st.markdown("""
     --neon-green: #39FF14;
 }
 
-/* --- FUNDO "CIDADE BINÁRIA" (CSS PURO) --- */
+/* --- FUNDO "3 RAIOS" (IMAGEM COM 25% VISIBILIDADE) --- */
 .stApp {
     background-color: var(--naval-blue);
+    /* Camada 1: Gradiente Azul Naval quase sólido (95% -> 75%) para controlar a visibilidade
+       Camada 2: Imagem de Raios
+    */
     background-image: 
-        /* Camada 1: Gradiente suave para escurecer o topo (Céu) */
-        linear-gradient(to bottom, rgba(5, 22, 38, 1) 0%, rgba(5, 22, 38, 0.6) 100%),
-        
-        /* Camada 2: O "Skyline" Binário (Barras verticais que parecem prédios/código) */
-        repeating-linear-gradient(
-            90deg,
-            transparent 0px,
-            transparent 10px,
-            rgba(10, 35, 66, 0.8) 10px, 
-            rgba(10, 35, 66, 0.8) 30px,
-            transparent 30px,
-            transparent 45px,
-            rgba(255, 103, 0, 0.03) 45px, /* Detalhe Laranja Sutil */
-            rgba(255, 103, 0, 0.03) 46px,
-            rgba(10, 35, 66, 0.6) 46px,
-            rgba(10, 35, 66, 0.6) 80px
-        ),
-        
-        /* Camada 3: Grid de Pontos (Matrix style) */
-        radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-        
-    background-size: 100% 100%, 100% 100%, 20px 20px;
+        linear-gradient(to bottom, rgba(5, 22, 38, 0.95) 0%, rgba(5, 22, 38, 0.75) 100%),
+        url('https://images.unsplash.com/photo-1605727216801-e27ce1d0cc28?q=80&w=2071&auto=format&fit=crop');
+    background-size: cover;
     background-attachment: fixed;
+    background-position: center;
     color: var(--text-white);
 }
 
@@ -65,7 +57,7 @@ p, div, label, li, span {
     color: #E0E0E0;
 }
 
-/* --- HERO TITLE (TEXTO VIBRANTE) --- */
+/* --- HERO TITLE --- */
 .hero-title {
     font-family: 'Montserrat', sans-serif;
     font-weight: 900;
@@ -80,59 +72,46 @@ p, div, label, li, span {
                  0 0 30px rgba(255, 103, 0, 0.1);
 }
 
-/* --- CARDS DOS PLANOS --- */
-.plan-card {
-    background-color: rgba(10, 35, 66, 0.95);
-    border: 2px solid #1C3D5A;
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    margin-bottom: 20px;
-    height: 100%;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+/* --- ANIMAÇÃO DE PULSO (TEXTO E BORDA) --- */
+@keyframes neon-pulse {
+    0% { 
+        box-shadow: 0 0 5px rgba(255, 103, 0, 0.2);
+        color: rgba(255, 255, 255, 0.8);
+        border-color: rgba(255, 103, 0, 0.5);
+    }
+    50% { 
+        box-shadow: 0 0 20px rgba(255, 103, 0, 0.8), inset 0 0 10px rgba(255, 103, 0, 0.4);
+        color: #FF6700;
+        border-color: #FF6700;
+        text-shadow: 0 0 10px #FF6700;
+    }
+    100% { 
+        box-shadow: 0 0 5px rgba(255, 103, 0, 0.2);
+        color: rgba(255, 255, 255, 0.8);
+        border-color: rgba(255, 103, 0, 0.5);
+    }
 }
 
-.plan-card:hover {
-    border-color: var(--legacy-orange);
-    box-shadow: 0 10px 30px rgba(255, 103, 0, 0.15);
-    transform: translateY(-5px);
-}
+/* ESTILO DO BOTÃO DE DESCONTO (Hack para customizar o st.button específico) */
+/* Como não dá pra colocar ID no st.button, usamos o div que envolve o botão */
 
-.plan-title {
-    color: #fff !important;
-    font-size: 1.4rem;
-    margin-bottom: 5px;
-    font-weight: 900;
-}
-
-.plan-subtitle {
-    color: #aaa; 
-    font-size: 0.85rem; 
-    text-transform: uppercase; 
-    letter-spacing: 1px;
-    margin-bottom: 15px;
-    min-height: 40px;
-}
-
-.price-big {
+div.row-widget.stButton > button {
+    width: 100%;
     font-family: 'Montserrat', sans-serif;
-    font-size: 2.5rem;
     font-weight: 900;
-    color: #fff;
-    margin: 10px 0;
-}
-
-.price-cents {
     font-size: 1.2rem;
-    color: var(--legacy-orange);
-    vertical-align: super;
+    text-transform: uppercase;
+    border-radius: 8px;
+    border: 2px solid;
+    transition: all 0.3s ease;
+    background-color: rgba(10, 35, 66, 0.8);
 }
 
-/* --- BOTÕES PERSONALIZADOS --- */
+/* ESTADO DESLIGADO (LARANJA PULSANTE) */
+/* Identificamos pelo texto do botão via CSS ou aplicamos genericamente se for o único botão primário neste contexto,
+   mas aqui vamos assumir que o script Python muda o rótulo e o CSS anima. */
+
+/* --- BOTÕES PERSONALIZADOS (LINKS) --- */
 a.custom-btn {
     display: block;
     width: 100%;
@@ -148,7 +127,7 @@ a.custom-btn {
     letter-spacing: 1px;
 }
 
-/* Botão Sparky (Off-White) */
+/* Botão Sparky */
 a.btn-sparky {
     background-color: var(--off-white);
     color: var(--naval-blue);
@@ -156,22 +135,16 @@ a.btn-sparky {
 }
 a.btn-sparky:hover {
     background-color: #fff;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
     transform: scale(1.02);
 }
 
-/* Botão Power+ (Laranja Vibrante + Retroiluminação) */
+/* Botão Power+ */
 a.btn-power {
     background-color: var(--legacy-orange);
     color: #fff;
     border: none;
     box-shadow: 0 0 20px rgba(255, 103, 0, 0.6); 
     animation: glow-pulse 2s infinite;
-}
-a.btn-power:hover {
-    background-color: #FF8533;
-    box-shadow: 0 0 30px rgba(255, 103, 0, 0.9);
-    transform: scale(1.02);
 }
 
 @keyframes glow-pulse {
@@ -180,119 +153,81 @@ a.btn-power:hover {
     100% { box-shadow: 0 0 15px rgba(255, 103, 0, 0.5); }
 }
 
-/* --- DETALHES E COBERTURAS --- */
-.main-features {
-    text-align: left;
-    list-style: none;
-    padding: 0;
-    margin: 15px 0;
-}
-.main-features li {
-    margin-bottom: 8px;
-    font-size: 0.95rem;
-}
-.check-icon {
-    color: var(--legacy-orange);
-    margin-right: 8px;
-    font-weight: bold;
+/* --- CARDS E DETALHES --- */
+.plan-card {
+    background-color: rgba(10, 35, 66, 0.95);
+    border: 2px solid #1C3D5A;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
 
-/* Caixa Expansível */
+.price-big {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #fff;
+    margin: 10px 0;
+}
+.price-cents {
+    font-size: 1.2rem;
+    color: var(--legacy-orange);
+    vertical-align: super;
+}
+
 details {
     margin-top: 15px;
-    border-radius: 8px;
-    overflow: hidden;
-    background: rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0.3);
     border: 1px solid #333;
-    transition: all 0.3s;
+    border-radius: 8px;
 }
-
 summary {
-    list-style: none;
     padding: 12px;
-    background: linear-gradient(90deg, #1C3D5A 0%, #0A2342 100%);
+    background: #1C3D5A;
     color: #ccc;
     font-weight: 600;
     cursor: pointer;
     text-align: center;
     text-transform: uppercase;
     font-size: 0.8rem;
-    border-top: 1px solid #333;
-}
-summary:hover {
-    color: #fff;
-    background: #1C3D5A;
 }
 summary::-webkit-details-marker { display: none; }
-
-details[open] summary {
-    background: #1C3D5A;
-    color: var(--legacy-orange);
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.details-content {
-    padding: 15px;
-    text-align: left;
-    font-size: 0.85rem;
-    line-height: 1.5;
-    color: #ccc;
-}
-.details-content strong {
-    color: var(--legacy-orange);
-    display: block;
-    margin-top: 12px;
-    margin-bottom: 4px;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    border-bottom: 1px solid rgba(255,103,0,0.3);
-    padding-bottom: 2px;
-}
-.details-content ul {
-    padding-left: 20px; 
-    margin: 5px 0;
-}
-.details-content li {
-    margin-bottom: 4px;
-}
-
-/* --- DESTAQUE TOGGLE ESTUDANTE (Animação de Pulso) --- */
-@keyframes pulse-border-orange {
-    0% { border-color: rgba(255, 103, 0, 0.4); box-shadow: 0 0 0 0 rgba(255, 103, 0, 0.4); transform: scale(1); }
-    50% { border-color: #FF6700; box-shadow: 0 0 15px 0 rgba(255, 103, 0, 0.6); transform: scale(1.01); }
-    100% { border-color: rgba(255, 103, 0, 0.4); box-shadow: 0 0 0 0 rgba(255, 103, 0, 0.4); transform: scale(1); }
-}
-
-.student-box-off {
-    background: rgba(10, 35, 66, 0.5);
-    border: 2px solid var(--legacy-orange);
-    border-radius: 10px;
-    padding: 15px;
-    margin-top: 20px;
-    text-align: center;
-    /* ANIMAÇÃO QUANDO DESLIGADO */
-    animation: pulse-border-orange 1.5s infinite;
-}
-
-.student-box-on {
-    background: rgba(57, 255, 20, 0.1);
-    border: 2px solid var(--neon-green);
-    border-radius: 10px;
-    padding: 15px;
-    margin-top: 20px;
-    text-align: center;
-    box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
-    transition: all 0.5s;
-}
-
-/* Ajuste dos Labels do Streamlit */
-.stCheckbox label p {
-    font-size: 1.1rem !important;
-    font-weight: bold !important;
-    color: #fff !important;
-}
 </style>
 """, unsafe_allow_html=True)
+
+# Lógica para injetar CSS específico no botão dependendo do estado
+if not st.session_state.is_student_active:
+    st.markdown("""
+    <style>
+    /* Estilo PULSANTE (Desligado) */
+    div.row-widget.stButton > button {
+        color: #FF6700 !important;
+        border-color: #FF6700 !important;
+        animation: neon-pulse 1.5s infinite alternate;
+    }
+    div.row-widget.stButton > button:hover {
+        background-color: rgba(255, 103, 0, 0.1);
+    }
+    </style>
+    """, unsafe_allow_html=True)
+else:
+    st.markdown("""
+    <style>
+    /* Estilo ATIVO (Ligado - Verde) */
+    div.row-widget.stButton > button {
+        color: #000 !important;
+        background-color: #39FF14 !important;
+        border-color: #39FF14 !important;
+        box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
+    }
+    div.row-widget.stButton > button:hover {
+        background-color: #32d612 !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 # --- CABEÇALHO ---
 col1, col2 = st.columns([1, 4])
@@ -300,7 +235,6 @@ with col1:
     st.markdown("<div style='font-size: 70px; text-align: center;'>🏍️</div>", unsafe_allow_html=True)
 with col2:
     st.title("LEGACY E-STUDENT")
-    # Novo Texto Vibrante Master das Galáxias
     st.markdown('<div class="hero-title">FAÇA PARTE DESTE LEGADO</div>', unsafe_allow_html=True)
 
 st.divider()
@@ -324,35 +258,27 @@ with col_input2:
     else:
         modelo = modelo_select
 
-# --- DESTAQUE PARA O TOGGLE DE DESCONTO ---
-# Para decidir qual estilo aplicar (piscando ou fixo), precisamos checar o estado atual
-if 'is_student_active' not in st.session_state:
-    st.session_state.is_student_active = False
+# --- BOTÃO "ALAVANCA" DE DESCONTO ---
+st.markdown("<br>", unsafe_allow_html=True)
 
-# Define a classe CSS baseada no estado
-box_class = "student-box-on" if st.session_state.is_student_active else "student-box-off"
+# Texto do botão muda conforme o estado
+btn_label = "✅ DESCONTO UNIVERSITÁRIO ATIVADO" if st.session_state.is_student_active else "⚡ CLIQUE PARA ATIVAR SEU DESCONTO ⚡"
 
-# TEXTO ALTERADO CONFORME PEDIDO
-txt_cta = "✅ DESCONTO ATIVADO!" if st.session_state.is_student_active else "👇 ATIVE O SEU DESCONTO UNIVERSITÁRIO"
+# O Botão em si
+if st.button(btn_label, on_click=toggle_discount):
+    pass # A lógica está na função callback toggle_discount
 
-st.markdown(f'<div class="{box_class}">', unsafe_allow_html=True)
-# O toggle controla a variável de estado
-is_student = st.toggle(txt_cta, value=st.session_state.is_student_active, key="toggle_student")
-# Atualiza o session state
-st.session_state.is_student_active = is_student
-st.markdown('</div>', unsafe_allow_html=True)
-
-# --- LÓGICA DE PRECIFICAÇÃO E MENSAGENS ---
+# --- LÓGICA DE PRECIFICAÇÃO ---
 whatsapp_number = "+5521980195077"
 
-if is_student:
-    st.success("🎉 Condição Especial Universitária Aplicada!")
+if st.session_state.is_student_active:
+    # Mensagem de sucesso discreta abaixo do botão
+    st.caption("🎉 Preços atualizados com sucesso!")
     price_sparky, cents_sparky = "71", ",90"
     price_power, cents_power = "107", ",90"
     moto_msg = modelo if (modelo and modelo != 'Selecione...') else 'moto'
     whatsapp_msg = f"Oi! Sou estudante, vi a tabela Legacy E-Student e quero proteger minha {moto_msg}. Meu nome é {nome}."
 else:
-    st.info("💡 Dica: Estudantes têm condições especiais. Ative a opção acima!")
     price_sparky, cents_sparky = "79", ",90"
     price_power, cents_power = "119", ",90"
     moto_msg = modelo if (modelo and modelo != 'Selecione...') else 'moto'
@@ -365,7 +291,6 @@ st.markdown("---")
 # --- EXIBIÇÃO DOS PLANOS ---
 col_plan1, col_plan2 = st.columns(2)
 
-# NOTA: Removi toda a indentação do HTML para evitar que o Streamlit imprima o código
 # PLANO 1: LEGACY SPARKY
 with col_plan1:
     html_sparky = f"""
