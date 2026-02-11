@@ -1,6 +1,6 @@
 import streamlit as st
 
-# --- CONFIGURAÇÃO DA PÁGINA ---
+# --- CONFIGURAÇÃO DA PÁGINA (OBRIGATÓRIO SER A PRIMEIRA LINHA) ---
 st.set_page_config(
     page_title="Legacy E-Student | Planos",
     page_icon="⚡",
@@ -8,7 +8,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- ESTILIZAÇÃO CSS (VISUAL LEGACY: AZUL NAVAL & LARANJA + ANIMAÇÃO VIBRANTE) ---
+# --- ESTILIZAÇÃO CSS (VISUAL LEGACY + ANIMAÇÃO VIBRANTE CORRIGIDA) ---
 st.markdown("""
     <style>
     /* Importando fontes */
@@ -16,18 +16,19 @@ st.markdown("""
 
     /* Cores da Marca Legacy */
     :root {
-        --naval-blue: #051626;  /* Azul Naval Profundo */
-        --card-blue: #0A2342;   /* Azul um pouco mais claro para cards */
-        --legacy-orange: #FF6700; /* Laranja Vibrante */
+        --naval-blue: #051626;
+        --card-blue: #0A2342;
+        --legacy-orange: #FF6700;
         --text-white: #ffffff;
     }
 
-    /* Fundo e Cores Globais */
+    /* Fundo Global */
     .stApp {
         background-color: var(--naval-blue);
         color: var(--text-white);
     }
     
+    /* Tipografia */
     h1, h2, h3 {
         font-family: 'Montserrat', sans-serif;
         font-weight: 900 !important;
@@ -41,7 +42,7 @@ st.markdown("""
         color: #E0E0E0;
     }
 
-    /* Estilo dos Cards de Preço */
+    /* Card Principal */
     .plan-card {
         background-color: var(--card-blue);
         border: 2px solid #1C3D5A;
@@ -73,7 +74,7 @@ st.markdown("""
         text-transform: uppercase; 
         letter-spacing: 1px;
         margin-bottom: 15px;
-        min-height: 40px; /* Alinha altura dos cards */
+        min-height: 40px;
     }
 
     .price-big {
@@ -97,17 +98,16 @@ st.markdown("""
         100% { box-shadow: 0 0 0 0 rgba(255, 103, 0, 0); transform: scale(1); }
     }
 
-    /* Estilo do Details/Summary (A Caixa Vibrante) */
-    details {
+    /* Estilo da Caixa Vibrante (Scoped) */
+    .vibrating-box {
         margin-top: 15px;
         border-radius: 8px;
         overflow: hidden;
         background: rgba(0,0,0,0.2);
         border: 1px solid #333;
-        transition: all 0.3s;
     }
 
-    summary {
+    .vibrating-summary {
         list-style: none;
         padding: 12px;
         background: linear-gradient(90deg, #1C3D5A 0%, #0A2342 100%);
@@ -118,31 +118,29 @@ st.markdown("""
         text-transform: uppercase;
         font-size: 0.9rem;
         position: relative;
-        /* APLICA A ANIMAÇÃO AQUI */
+        /* ANIMAÇÃO ATIVA */
         animation: pulse-orange 2s infinite;
         border: 1px solid var(--legacy-orange);
         border-radius: 8px;
     }
 
-    /* Remove a seta padrão do summary */
-    summary::-webkit-details-marker {
+    /* Remove seta padrão */
+    .vibrating-summary::-webkit-details-marker {
         display: none;
     }
 
-    /* Estado Aberto (Para a vibração e muda cor) */
-    details[open] summary {
-        animation: none; /* Para de vibrar ao abrir */
+    /* Quando aberto: para de vibrar e muda estilo */
+    .vibrating-box[open] .vibrating-summary {
+        animation: none;
         background: var(--legacy-orange);
-        color: #fff;
         border-radius: 8px 8px 0 0;
         border-bottom: 1px solid rgba(255,255,255,0.2);
     }
     
-    details[open] {
+    .vibrating-box[open] {
         border-color: var(--legacy-orange);
     }
 
-    /* Conteúdo Expandido */
     .details-content {
         padding: 15px;
         text-align: left;
@@ -158,11 +156,6 @@ st.markdown("""
         margin-bottom: 4px;
         text-transform: uppercase;
         font-size: 0.8rem;
-    }
-
-    .details-content ul {
-        padding-left: 20px;
-        margin: 0;
     }
 
     /* Botões */
@@ -186,14 +179,12 @@ st.markdown("""
         box-shadow: 0 0 15px rgba(255, 103, 0, 0.4);
     }
 
-    /* Check Icon na lista principal */
     .check-icon {
         color: var(--legacy-orange);
         margin-right: 8px;
         font-weight: bold;
     }
     
-    /* Feature List Principal */
     .main-features {
         text-align: left;
         list-style: none;
@@ -204,14 +195,14 @@ st.markdown("""
         margin-bottom: 8px;
         font-size: 0.9rem;
     }
-
     </style>
 """, unsafe_allow_html=True)
 
 # --- CABEÇALHO ---
 col1, col2 = st.columns([1, 4])
 with col1:
-    st.image("https://img.icons8.com/ios-filled/100/FF6700/motorcycle.png", width=80) 
+    # Substituindo imagem externa por HTML seguro (Emoji Grande)
+    st.markdown("<div style='font-size: 70px; text-align: center;'>🏍️</div>", unsafe_allow_html=True)
 with col2:
     st.title("LEGACY E-STUDENT")
     st.markdown("**Sua elétrica protegida. Sem letras miúdas.**")
@@ -225,22 +216,13 @@ col_input1, col_input2 = st.columns(2)
 with col_input1:
     nome = st.text_input("Seu Nome/Apelido", placeholder="Ex: João")
 with col_input2:
-    # Lista com os principais modelos do mercado + opção de digitar
     lista_motos = [
-        "Selecione...", 
-        "Voltz EV1", 
-        "Voltz EVS", 
-        "Watts W125", 
-        "Shineray SHE S", 
-        "Shineray SE 1/2",
-        "Super Soco TC/TS", 
-        "GWS K14/K8", 
-        "Gloov",
-        "Outro Modelo (Digitar...)"
+        "Selecione...", "Voltz EV1", "Voltz EVS", "Watts W125", 
+        "Shineray SHE S", "Shineray SE 1/2", "Super Soco TC/TS", 
+        "GWS K14/K8", "Gloov", "Outro Modelo (Digitar...)"
     ]
     modelo_select = st.selectbox("Qual sua moto?", lista_motos)
     
-    # Lógica para permitir digitar se não estiver na lista
     if modelo_select == "Outro Modelo (Digitar...)":
         modelo = st.text_input("Digite o modelo exato:", placeholder="Ex: Aima, Boram...")
     else:
@@ -251,39 +233,29 @@ st.markdown("<br>", unsafe_allow_html=True)
 is_student = st.toggle("🎓 **Sou Estudante Universitário (Ver Preço com Desconto)**", value=True)
 
 # LÓGICA DE PRECIFICAÇÃO
-# Base Sparky: R$ 79,90
-# Base Power+: R$ 119,90
-
 if is_student:
     st.success("✅ Condição Especial Universitária Aplicada!")
-    # Simulando 10% de desconto sobre a tabela oficial
-    price_sparky = "71"
-    cents_sparky = ",90"
-    price_power = "107"
-    cents_power = ",90"
-    whatsapp_msg = f"Oi! Sou estudante, vi a tabela Legacy E-Student e quero proteger minha {modelo if modelo != 'Selecione...' else 'moto'}. Meu nome é {nome}."
+    price_sparky, cents_sparky = "71", ",90"
+    price_power, cents_power = "107", ",90"
+    # Lógica segura para nome da moto
+    moto_msg = modelo if (modelo and modelo != 'Selecione...') else 'moto'
+    whatsapp_msg = f"Oi! Sou estudante, vi a tabela Legacy E-Student e quero proteger minha {moto_msg}. Meu nome é {nome}."
 else:
     st.info("💡 Dica: Estudantes têm condições especiais. Ative a opção acima!")
-    # Preços Oficiais
-    price_sparky = "79"
-    cents_sparky = ",90"
-    price_power = "119"
-    cents_power = ",90"
-    whatsapp_msg = f"Oi! Quero proteger minha {modelo if modelo != 'Selecione...' else 'moto'} com a tabela oficial. Meu nome é {nome}."
+    price_sparky, cents_sparky = "79", ",90"
+    price_power, cents_power = "119", ",90"
+    moto_msg = modelo if (modelo and modelo != 'Selecione...') else 'moto'
+    whatsapp_msg = f"Oi! Quero proteger minha {moto_msg} com a tabela oficial. Meu nome é {nome}."
 
-# Link do WhatsApp
 whatsapp_number = "+5521980195077"
 whatsapp_link = f"https://wa.me/{whatsapp_number}?text={whatsapp_msg.replace(' ', '%20')}" 
 
 st.markdown("---")
 
 # --- EXIBIÇÃO DOS PLANOS ---
-
 col_plan1, col_plan2 = st.columns(2)
 
-# ==========================================================
 # PLANO 1: LEGACY SPARKY
-# ==========================================================
 with col_plan1:
     st.markdown(f"""
         <div class="plan-card">
@@ -293,16 +265,14 @@ with col_plan1:
             <div class="price-big">R$ {price_sparky}<span class="price-cents">{cents_sparky}</span></div>
             <p style="font-size: 0.8rem;">mensais</p>
             
-            <!-- Lista Principal (Chamariz) -->
             <ul class="main-features">
                 <li><span class="check-icon">✓</span> <b>Roubo e Furto</b></li>
                 <li><span class="check-icon">✓</span> <b>Assistência 24h</b> (Até 100km)</li>
                 <li><span class="check-icon">✓</span> <b>Atendimento RJ</b> (Capital e Interior)</li>
             </ul>
 
-            <!-- Caixa Vibrante com Detalhes -->
-            <details>
-                <summary>👇 VEJA TODAS AS REGRAS 👇<br>(Clique para abrir)</summary>
+            <details class="vibrating-box">
+                <summary class="vibrating-summary">👇 VEJA TODAS AS REGRAS 👇<br>(Clique para abrir)</summary>
                 <div class="details-content">
                     <strong>COBERTURAS INCLUSAS</strong>
                     • Roubo e Furto;<br>
@@ -331,9 +301,7 @@ with col_plan1:
     """, unsafe_allow_html=True)
     st.link_button("QUERO O SPARKY", whatsapp_link, type="primary")
 
-# ==========================================================
 # PLANO 2: LEGACY POWER+
-# ==========================================================
 with col_plan2:
     st.markdown(f"""
         <div class="plan-card" style="border-color: #FF6700;">
@@ -344,16 +312,14 @@ with col_plan2:
             <div class="price-big">R$ {price_power}<span class="price-cents">{cents_power}</span></div>
             <p style="font-size: 0.8rem;">mensais</p>
             
-            <!-- Lista Principal (Chamariz) -->
             <ul class="main-features">
                 <li><span class="check-icon">✓</span> <b>Roubo, Furto e Colisão</b></li>
                 <li><span class="check-icon">✓</span> <b>Danos a Terceiros</b> (Até 3k)</li>
                 <li><span class="check-icon">✓</span> <b>Assistência 24h</b> (Até 100km)</li>
             </ul>
 
-            <!-- Caixa Vibrante com Detalhes -->
-            <details>
-                <summary>👇 VEJA TODAS AS REGRAS 👇<br>(Clique para abrir)</summary>
+            <details class="vibrating-box">
+                <summary class="vibrating-summary">👇 VEJA TODAS AS REGRAS 👇<br>(Clique para abrir)</summary>
                 <div class="details-content">
                     <strong>COBERTURAS INCLUSAS</strong>
                     • Roubo, Furto e Colisão;<br>
@@ -380,25 +346,20 @@ with col_plan2:
     """, unsafe_allow_html=True)
     st.link_button("QUERO O POWER+", whatsapp_link)
 
-# --- SEÇÃO DE BENEFÍCIOS ---
+# --- BENEFÍCIOS ---
 st.markdown("---")
 st.markdown("### 🧪 POR QUE LEGACY?")
-
 col_ben1, col_ben2, col_ben3 = st.columns(3)
-
 with col_ben1:
     st.markdown("**🇧🇷 Cobertura RJ**")
     st.caption("Especialista no Rio de Janeiro (Capital e Interior).")
-
 with col_ben2:
     st.markdown("**🔋 SOS Elétrico**")
     st.caption("Ficou sem bateria? O guincho busca você e sua moto (até 100km).")
-
 with col_ben3:
     st.markdown("**🚀 Sem Burocracia**")
     st.caption("Cota de participação clara e proteção da Nota Fiscal.")
 
-# --- FOOTER ---
 st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: #777; font-size: 0.8rem;">
