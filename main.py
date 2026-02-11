@@ -8,7 +8,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- ESTILIZAÇÃO CSS (VISUAL LEGACY + ANIMAÇÃO VIBRANTE CORRIGIDA) ---
+# --- ESTILIZAÇÃO CSS (VISUAL LEGACY + BOTÕES PERSONALIZADOS) ---
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap');
@@ -18,6 +18,7 @@ st.markdown("""
     --card-blue: #0A2342;
     --legacy-orange: #FF6700;
     --text-white: #ffffff;
+    --off-white: #F0F0F0;
 }
 
 .stApp {
@@ -38,7 +39,7 @@ p, div, label, li, span {
     color: #E0E0E0;
 }
 
-/* Card Principal */
+/* --- CARDS DOS PLANOS --- */
 .plan-card {
     background-color: var(--card-blue);
     border: 2px solid #1C3D5A;
@@ -49,6 +50,9 @@ p, div, label, li, span {
     margin-bottom: 20px;
     height: 100%;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .plan-card:hover {
@@ -87,96 +91,56 @@ p, div, label, li, span {
     vertical-align: super;
 }
 
-/* ANIMAÇÃO DE PULSO (VIBRAÇÃO) */
-@keyframes pulse-orange {
-    0% { box-shadow: 0 0 0 0 rgba(255, 103, 0, 0.7); transform: scale(1); }
-    50% { box-shadow: 0 0 0 10px rgba(255, 103, 0, 0); transform: scale(1.02); }
-    100% { box-shadow: 0 0 0 0 rgba(255, 103, 0, 0); transform: scale(1); }
-}
-
-/* Estilo da Caixa Vibrante */
-.vibrating-box {
-    margin-top: 15px;
-    border-radius: 8px;
-    overflow: hidden;
-    background: rgba(0,0,0,0.2);
-    border: 1px solid #333;
-}
-
-.vibrating-summary {
-    list-style: none;
-    padding: 12px;
-    background: linear-gradient(90deg, #1C3D5A 0%, #0A2342 100%);
-    color: #fff;
-    font-weight: bold;
-    cursor: pointer;
-    text-align: center;
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    position: relative;
-    animation: pulse-orange 2s infinite;
-    border: 1px solid var(--legacy-orange);
-    border-radius: 8px;
-}
-
-.vibrating-summary::-webkit-details-marker {
-    display: none;
-}
-
-.vibrating-box[open] .vibrating-summary {
-    animation: none;
-    background: var(--legacy-orange);
-    border-radius: 8px 8px 0 0;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-}
-
-.vibrating-box[open] {
-    border-color: var(--legacy-orange);
-}
-
-.details-content {
-    padding: 15px;
-    text-align: left;
-    font-size: 0.85rem;
-    line-height: 1.4;
-    color: #ccc;
-}
-
-.details-content strong {
-    color: var(--legacy-orange);
+/* --- BOTÕES PERSONALIZADOS --- */
+a.custom-btn {
     display: block;
-    margin-top: 10px;
-    margin-bottom: 4px;
+    width: 100%;
+    padding: 15px 0;
+    margin-top: 20px;
+    text-align: center;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
     text-transform: uppercase;
-    font-size: 0.8rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
 }
 
-.stButton>button {
-    width: 100%;
+/* Botão Sparky (Off-White) */
+a.btn-sparky {
+    background-color: var(--off-white);
+    color: var(--naval-blue);
+    border: 2px solid #ccc;
+}
+a.btn-sparky:hover {
+    background-color: #fff;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    transform: scale(1.02);
+}
+
+/* Botão Power+ (Laranja Vibrante + Retroiluminação) */
+a.btn-power {
     background-color: var(--legacy-orange);
     color: #fff;
-    font-weight: 700;
     border: none;
-    border-radius: 6px;
-    height: 50px;
-    font-family: 'Montserrat', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-top: 15px;
+    /* Efeito de Retroiluminação Inicial */
+    box-shadow: 0 0 20px rgba(255, 103, 0, 0.6); 
+    animation: glow-pulse 2s infinite;
+}
+a.btn-power:hover {
+    background-color: #FF8533;
+    box-shadow: 0 0 30px rgba(255, 103, 0, 0.9);
+    transform: scale(1.02);
 }
 
-.stButton>button:hover {
-    background-color: #E55D00;
-    color: #fff;
-    box-shadow: 0 0 15px rgba(255, 103, 0, 0.4);
+@keyframes glow-pulse {
+    0% { box-shadow: 0 0 15px rgba(255, 103, 0, 0.5); }
+    50% { box-shadow: 0 0 25px rgba(255, 103, 0, 0.8); }
+    100% { box-shadow: 0 0 15px rgba(255, 103, 0, 0.5); }
 }
 
-.check-icon {
-    color: var(--legacy-orange);
-    margin-right: 8px;
-    font-weight: bold;
-}
-
+/* --- DETALHES E COBERTURAS --- */
 .main-features {
     text-align: left;
     list-style: none;
@@ -185,8 +149,90 @@ p, div, label, li, span {
 }
 .main-features li {
     margin-bottom: 8px;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
+.check-icon {
+    color: var(--legacy-orange);
+    margin-right: 8px;
+    font-weight: bold;
+}
+
+/* Caixa Expansível */
+details {
+    margin-top: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid #333;
+    transition: all 0.3s;
+}
+
+summary {
+    list-style: none;
+    padding: 12px;
+    background: linear-gradient(90deg, #1C3D5A 0%, #0A2342 100%);
+    color: #ccc;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    border-top: 1px solid #333;
+}
+summary:hover {
+    color: #fff;
+    background: #1C3D5A;
+}
+summary::-webkit-details-marker { display: none; }
+
+details[open] summary {
+    background: #1C3D5A;
+    color: var(--legacy-orange);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.details-content {
+    padding: 15px;
+    text-align: left;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: #ccc;
+}
+.details-content strong {
+    color: var(--legacy-orange);
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    border-bottom: 1px solid rgba(255,103,0,0.3);
+    padding-bottom: 2px;
+}
+.details-content ul {
+    padding-left: 20px; 
+    margin: 5px 0;
+}
+.details-content li {
+    margin-bottom: 4px;
+}
+
+/* --- DESTAQUE TOGGLE ESTUDANTE --- */
+.student-box {
+    background: linear-gradient(135deg, rgba(255, 103, 0, 0.1) 0%, rgba(10, 35, 66, 0.8) 100%);
+    border: 2px solid var(--legacy-orange);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(255, 103, 0, 0.15);
+}
+/* Forçar estilo do label do toggle */
+.stCheckbox label p {
+    font-size: 1.1rem !important;
+    font-weight: bold !important;
+    color: #fff !important;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -200,7 +246,7 @@ with col2:
 
 st.divider()
 
-# --- SIMULADOR INTERATIVO ---
+# --- INPUTS DO USUÁRIO ---
 st.markdown("### 📋 CONHEÇA OS PLANOS")
 
 col_input1, col_input2 = st.columns(2)
@@ -219,11 +265,16 @@ with col_input2:
     else:
         modelo = modelo_select
 
-# Toggle de Estudante
-st.markdown("<br>", unsafe_allow_html=True)
-is_student = st.toggle("🎓 **Sou Estudante Universitário (Ver Preço com Desconto)**", value=True)
+# --- LÓGICA DE PRECIFICAÇÃO E MENSAGENS ---
+# (Definida antes para usar nos links dos botões)
+whatsapp_number = "+5521980195077"
 
-# LÓGICA DE PRECIFICAÇÃO
+# --- DESTAQUE PARA O TOGGLE DE DESCONTO ---
+# Usando um container visual para destacar a opção
+st.markdown('<div class="student-box">', unsafe_allow_html=True)
+is_student = st.toggle("🎓 ATIVAR DESCONTO UNIVERSITÁRIO", value=True)
+st.markdown('</div>', unsafe_allow_html=True)
+
 if is_student:
     st.success("✅ Condição Especial Universitária Aplicada!")
     price_sparky, cents_sparky = "71", ",90"
@@ -237,8 +288,7 @@ else:
     moto_msg = modelo if (modelo and modelo != 'Selecione...') else 'moto'
     whatsapp_msg = f"Oi! Quero proteger minha {moto_msg} com a tabela oficial. Meu nome é {nome}."
 
-whatsapp_number = "+5521980195077"
-whatsapp_link = f"https://wa.me/{whatsapp_number}?text={whatsapp_msg.replace(' ', '%20')}" 
+whatsapp_link = f"https://wa.me/{whatsapp_number}?text={whatsapp_msg.replace(' ', '%20')}"
 
 st.markdown("---")
 
@@ -247,88 +297,110 @@ col_plan1, col_plan2 = st.columns(2)
 
 # PLANO 1: LEGACY SPARKY
 with col_plan1:
-    # AQUI ESTAVA O ERRO: A STRING HTML PRECISA ESTAR SEM ESPAÇOS NA ESQUERDA
     html_sparky = f"""
 <div class="plan-card">
-    <h3 class="plan-title">LEGACY SPARKY</h3>
-    <p class="plan-subtitle">Proteção para motos e ciclomotores elétricos.</p>
-    <div class="price-big">R$ {price_sparky}<span class="price-cents">{cents_sparky}</span></div>
-    <p style="font-size: 0.8rem;">mensais</p>
-    <ul class="main-features">
-        <li><span class="check-icon">✓</span> <b>Roubo e Furto</b></li>
-        <li><span class="check-icon">✓</span> <b>Assistência 24h</b> (Até 100km)</li>
-        <li><span class="check-icon">✓</span> <b>Atendimento RJ</b> (Capital e Interior)</li>
-    </ul>
-    <details class="vibrating-box">
-        <summary class="vibrating-summary">👇 VEJA TODAS AS REGRAS 👇<br>(Clique para abrir)</summary>
-        <div class="details-content">
-            <strong>COBERTURAS INCLUSAS</strong>
-            • Roubo e Furto;<br>
-            • Assistência 24h (guincho até 100 km, limitado a 2 utilizações anuais para socorro mecânico e pane elétrica);<br>
-            • Atendimento em todo o Estado do Rio de Janeiro (capital e interior).
-            <strong>COTA DE PARTICIPAÇÃO</strong>
-            • 10% sobre o valor da Nota Fiscal, com mínimo de R$ 1.000,00 aplicável em caso de reparo ou indenização própria.
-            <strong>EXCLUSÕES DE COBERTURA</strong>
-            • Colisão;<br>
-            • Furto isolado de peças, como bateria, pedal ou acessórios;<br>
-            • Danos decorrentes de mau uso, recarga inadequada ou sobrecarga elétrica;<br>
-            • Participação em atos ilícitos, rachas ou embriaguez;<br>
-            • Danos à bateria por desgaste natural ou falhas de fabricação;<br>
-            • Danos elétricos ou incêndios causados por recarga com equipamentos não homologados.
-            <strong>VIGÊNCIA E CANCELAMENTO</strong>
-            • Vigência inicial de 12 (doze) meses, com renovação automática por iguais períodos, salvo manifestação contrária de qualquer das partes com 30 (trinta) dias de antecedência.<br>
-            • O contrato poderá ser cancelado em caso de inadimplência superior a 30 dias.<br>
-            • 1 dia após o vencimento o veículo encontra-se desprotegido e sem quaisquer coberturas.
-            <strong>OBSERVAÇÃO</strong>
-            • Na ausência de Tabela FIPE específica para motos elétricas, o valor de referência será o declarado pelo associado, comprovado por nota fiscal de compra, cotação de mercado ou laudo técnico emitido por loja ou oficina credenciada.
-        </div>
-    </details>
+    <div>
+        <h3 class="plan-title">LEGACY SPARKY</h3>
+        <p class="plan-subtitle">Proteção Essencial (Roubo e Furto)</p>
+        <div class="price-big">R$ {price_sparky}<span class="price-cents">{cents_sparky}</span></div>
+        <p style="font-size: 0.8rem;">mensais</p>
+        
+        <!-- Lista Resumida (Sempre Visível) -->
+        <ul class="main-features">
+            <li><span class="check-icon">✓</span> <b>Roubo e Furto</b> (100% FIPE)</li>
+            <li><span class="check-icon">✓</span> <b>Assistência 24h</b> (100km)</li>
+            <li><span class="check-icon">✓</span> <b>Clube de Vantagens</b></li>
+        </ul>
+
+        <!-- Detalhes Expansíveis -->
+        <details>
+            <summary>👇 VEJA MAIS COBERTURAS E REGRAS</summary>
+            <div class="details-content">
+                <strong>BENEFÍCIOS INCLUSOS</strong>
+                <ul>
+                    <li>Atendimento em todo o Estado do RJ;</li>
+                    <li>Sem Análise de Perfil (Aceita jovens de 18 anos);</li>
+                    <li>Guincho para Pane Elétrica (SOS Bateria);</li>
+                    <li>Clube de Vantagens (Descontos em parceiros).</li>
+                </ul>
+
+                <strong>REGRAS E EXCLUSÕES</strong>
+                <ul>
+                    <li>Cota de Participação: 10% da NF (Mín. R$ 1.000,00);</li>
+                    <li>Limite de 2 usos anuais para guincho (pane/mecânica);</li>
+                    <li>Não cobre: Colisão, Danos a Terceiros, Furto isolado de peças.</li>
+                </ul>
+                
+                <strong>VIGÊNCIA</strong>
+                <ul>
+                    <li>Contrato anual (12 meses).</li>
+                </ul>
+            </div>
+        </details>
+    </div>
+    
+    <!-- Botão Off-White -->
+    <a href="{whatsapp_link}" class="custom-btn btn-sparky" target="_blank">
+        QUERO O SPARKY
+    </a>
 </div>
 """
     st.markdown(html_sparky, unsafe_allow_html=True)
-    st.link_button("QUERO O SPARKY", whatsapp_link, type="primary")
 
 # PLANO 2: LEGACY POWER+
 with col_plan2:
     html_power = f"""
 <div class="plan-card" style="border-color: #FF6700;">
-    <div style="background: #FF6700; color: white; font-size: 0.7rem; font-weight: bold; border-radius: 4px; display: inline-block; padding: 2px 8px; margin-bottom: 5px;">TOP DE LINHA</div>
-    <h3 class="plan-title">LEGACY POWER+</h3>
-    <p class="plan-subtitle">Proteção completa: Colisão e Terceiros.</p>
-    <div class="price-big">R$ {price_power}<span class="price-cents">{cents_power}</span></div>
-    <p style="font-size: 0.8rem;">mensais</p>
-    <ul class="main-features">
-        <li><span class="check-icon">✓</span> <b>Roubo, Furto e Colisão</b></li>
-        <li><span class="check-icon">✓</span> <b>Danos a Terceiros</b> (Até 3k)</li>
-        <li><span class="check-icon">✓</span> <b>Assistência 24h</b> (Até 100km)</li>
-    </ul>
-    <details class="vibrating-box">
-        <summary class="vibrating-summary">👇 VEJA TODAS AS REGRAS 👇<br>(Clique para abrir)</summary>
-        <div class="details-content">
-            <strong>COBERTURAS INCLUSAS</strong>
-            • Roubo, Furto e Colisão;<br>
-            • Danos a terceiros (Até R$ 3.000,00 Três Mil Reais);<br>
-            • Assistência 24h (guincho até 100 km, limitado a 2 utilizações anuais para socorro mecânico e pane elétrica);<br>
-            • Atendimento em todo o Estado do Rio de Janeiro (capital e interior).
-            <strong>COTA DE PARTICIPAÇÃO</strong>
-            • 10% sobre o valor da Nota Fiscal (mínimo de R$ 1.000,00) para reparo ou indenização própria;<br>
-            • 5% sobre o valor da Fipe do terceiro (mínimo de R$ 1.000,00) para reparo de terceiros.
-            <strong>EXCLUSÕES DE COBERTURA</strong>
-            • Furto isolado de peças, como bateria, pedal ou acessórios;<br>
-            • Danos decorrentes de mau uso, recarga inadequada ou sobrecarga elétrica;<br>
-            • Participação em atos ilícitos, rachas ou embriaguez;<br>
-            • Danos à bateria por desgaste natural ou falhas de fabricação;<br>
-            • Danos elétricos ou incêndios decorrentes de recarga inadequada ou uso de equipamentos não homologados.
-            <strong>VIGÊNCIA E CANCELAMENTO</strong>
-            • Vigência inicial de 12 (doze) meses, com renovação automática por iguais períodos, salvo manifestação contrária de qualquer das partes com 30 (trinta) dias de antecedência;<br>
-            • O contrato poderá ser cancelado em caso de inadimplência superior a 30 dias.<br>
-            • 1 dia após o vencimento o veículo encontra-se desprotegido e sem quaisquer coberturas.
-        </div>
-    </details>
+    <div>
+        <div style="background: #FF6700; color: white; font-size: 0.7rem; font-weight: bold; border-radius: 4px; display: inline-block; padding: 2px 8px; margin-bottom: 5px;">TOP DE LINHA</div>
+        <h3 class="plan-title">LEGACY POWER+</h3>
+        <p class="plan-subtitle">Blindagem Total (Colisão + Terceiros)</p>
+        <div class="price-big">R$ {price_power}<span class="price-cents">{cents_power}</span></div>
+        <p style="font-size: 0.8rem;">mensais</p>
+        
+        <!-- Lista Resumida (Sempre Visível) -->
+        <ul class="main-features">
+            <li><span class="check-icon">✓</span> <b>Roubo, Furto e Colisão</b></li>
+            <li><span class="check-icon">✓</span> <b>Danos a Terceiros</b> (Até 3k)</li>
+            <li><span class="check-icon">✓</span> <b>Assistência 24h</b> (100km)</li>
+        </ul>
+
+        <!-- Detalhes Expansíveis -->
+        <details>
+            <summary>👇 VEJA MAIS COBERTURAS E REGRAS</summary>
+            <div class="details-content">
+                <strong>BENEFÍCIOS INCLUSOS</strong>
+                <ul>
+                    <li>Cobertura Completa (PT e Parcial);</li>
+                    <li>Danos a Terceiros (Materiais/Corporais até R$ 3.000);</li>
+                    <li>Atendimento em todo o Estado do RJ;</li>
+                    <li>Sem Análise de Perfil;</li>
+                    <li>Clube de Vantagens.</li>
+                </ul>
+
+                <strong>REGRAS E EXCLUSÕES</strong>
+                <ul>
+                    <li>Cota Própria: 10% da NF (Mín. R$ 1.000,00);</li>
+                    <li>Cota Terceiro: 5% da FIPE (Mín. R$ 1.000,00);</li>
+                    <li>Limite de 2 usos anuais para guincho;</li>
+                    <li>Não cobre: Furto isolado de peças (bateria/acessórios).</li>
+                </ul>
+                
+                <strong>VIGÊNCIA</strong>
+                <ul>
+                    <li>Contrato anual (12 meses).</li>
+                </ul>
+            </div>
+        </details>
+    </div>
+    
+    <!-- Botão Laranja Vibrante + Neon -->
+    <a href="{whatsapp_link}" class="custom-btn btn-power" target="_blank">
+        QUERO O POWER+
+    </a>
 </div>
 """
     st.markdown(html_power, unsafe_allow_html=True)
-    st.link_button("QUERO O POWER+", whatsapp_link)
 
 # --- BENEFÍCIOS ---
 st.markdown("---")
