@@ -24,9 +24,12 @@ st.markdown("""
 
 /* --- FUNDO COM IMAGEM E TRANSPARÊNCIA --- */
 .stApp {
-    /* Imagem de fundo com overlay Azul Naval 90% para dar o tom da marca sem roubar atenção */
+    /* IMAGEM DE FUNDO:
+       Troquei por uma imagem noturna urbana com foco em mobilidade elétrica.
+       Para usar a sua do Canva: Faça upload no Imgur.com e cole o 'Direct Link' aqui.
+    */
     background-image: linear-gradient(rgba(5, 22, 38, 0.92), rgba(5, 22, 38, 0.92)), 
-                      url('https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=2070&auto=format&fit=crop');
+                      url('https://images.unsplash.com/photo-1654512402941-45456e52292f?q=80&w=2062&auto=format&fit=crop');
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
