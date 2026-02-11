@@ -22,8 +22,14 @@ st.markdown("""
     --neon-green: #39FF14;
 }
 
+/* --- FUNDO COM IMAGEM E TRANSPARÊNCIA --- */
 .stApp {
-    background-color: var(--naval-blue);
+    /* Imagem de fundo com overlay Azul Naval 90% para dar o tom da marca sem roubar atenção */
+    background-image: linear-gradient(rgba(5, 22, 38, 0.92), rgba(5, 22, 38, 0.92)), 
+                      url('https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=2070&auto=format&fit=crop');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
     color: var(--text-white);
 }
 
@@ -40,9 +46,25 @@ p, div, label, li, span {
     color: #E0E0E0;
 }
 
+/* --- HERO TITLE (TEXTO VIBRANTE) --- */
+.hero-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 2.5rem; /* Bem grande */
+    text-transform: uppercase;
+    color: var(--legacy-orange);
+    text-align: left;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    /* Efeito Neon Master das Galáxias */
+    text-shadow: 0 0 10px rgba(255, 103, 0, 0.5), 
+                 0 0 20px rgba(255, 103, 0, 0.3), 
+                 0 0 30px rgba(255, 103, 0, 0.1);
+}
+
 /* --- CARDS DOS PLANOS --- */
 .plan-card {
-    background-color: var(--card-blue);
+    background-color: rgba(10, 35, 66, 0.95); /* Leve transparência no card também */
     border: 2px solid #1C3D5A;
     border-radius: 12px;
     padding: 20px;
@@ -260,7 +282,8 @@ with col1:
     st.markdown("<div style='font-size: 70px; text-align: center;'>🏍️</div>", unsafe_allow_html=True)
 with col2:
     st.title("LEGACY E-STUDENT")
-    st.markdown("**Sua elétrica protegida. Sem letras miúdas.**")
+    # Novo Texto Vibrante Master das Galáxias
+    st.markdown('<div class="hero-title">FAÇA PARTE DESTE LEGADO</div>', unsafe_allow_html=True)
 
 st.divider()
 
