@@ -24,12 +24,12 @@ st.markdown("""
 
 /* --- FUNDO COM IMAGEM E TRANSPARÊNCIA --- */
 .stApp {
-    /* IMAGEM DE FUNDO:
-       Troquei por uma imagem noturna urbana com foco em mobilidade elétrica.
-       Para usar a sua do Canva: Faça upload no Imgur.com e cole o 'Direct Link' aqui.
+    /* IMAGEM DE FUNDO DO USUÁRIO (IMGUR)
+       Converti o link do álbum para link direto (i.imgur.com/....jpeg)
+       Mantive a superposição azul naval com 92% de opacidade para garantir leitura.
     */
     background-image: linear-gradient(rgba(5, 22, 38, 0.92), rgba(5, 22, 38, 0.92)), 
-                      url('https://images.unsplash.com/photo-1654512402941-45456e52292f?q=80&w=2062&auto=format&fit=crop');
+                      url('https://i.imgur.com/6wJOibU.jpeg');
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
