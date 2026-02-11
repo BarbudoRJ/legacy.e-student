@@ -29,18 +29,33 @@ st.markdown("""
     --neon-green: #39FF14;
 }
 
-/* --- FUNDO "3 RAIOS" (IMAGEM COM 25% VISIBILIDADE) --- */
+/* --- FUNDO "CIDADE BINÁRIA" (GERADO POR CÓDIGO CSS) --- */
 .stApp {
     background-color: var(--naval-blue);
-    /* Camada 1: Gradiente Azul Naval quase sólido (95% -> 75%) para controlar a visibilidade
-       Camada 2: Imagem de Raios
-    */
     background-image: 
-        linear-gradient(to bottom, rgba(5, 22, 38, 0.95) 0%, rgba(5, 22, 38, 0.75) 100%),
-        url('https://images.unsplash.com/photo-1605727216801-e27ce1d0cc28?q=80&w=2071&auto=format&fit=crop');
-    background-size: cover;
+        /* Camada 1: Gradiente suave para escurecer o topo (Céu noturno) */
+        linear-gradient(to bottom, rgba(5, 22, 38, 1) 0%, rgba(5, 22, 38, 0.7) 100%),
+        
+        /* Camada 2: O "Skyline" Binário (Barras verticais de larguras variadas) */
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 4px,
+            rgba(10, 35, 66, 0.6) 4px, 
+            rgba(10, 35, 66, 0.6) 15px,
+            transparent 15px,
+            transparent 25px,
+            rgba(255, 103, 0, 0.05) 25px, /* Detalhe Laranja Sutil */
+            rgba(255, 103, 0, 0.05) 26px,
+            rgba(10, 35, 66, 0.5) 26px,
+            rgba(10, 35, 66, 0.5) 40px
+        ),
+        
+        /* Camada 3: Grid de Fundo */
+        radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        
+    background-size: 100% 100%, 100% 100%, 30px 30px;
     background-attachment: fixed;
-    background-position: center;
     color: var(--text-white);
 }
 
@@ -92,9 +107,6 @@ p, div, label, li, span {
     }
 }
 
-/* ESTILO DO BOTÃO DE DESCONTO (Hack para customizar o st.button específico) */
-/* Como não dá pra colocar ID no st.button, usamos o div que envolve o botão */
-
 div.row-widget.stButton > button {
     width: 100%;
     font-family: 'Montserrat', sans-serif;
@@ -106,10 +118,6 @@ div.row-widget.stButton > button {
     transition: all 0.3s ease;
     background-color: rgba(10, 35, 66, 0.8);
 }
-
-/* ESTADO DESLIGADO (LARANJA PULSANTE) */
-/* Identificamos pelo texto do botão via CSS ou aplicamos genericamente se for o único botão primário neste contexto,
-   mas aqui vamos assumir que o script Python muda o rótulo e o CSS anima. */
 
 /* --- BOTÕES PERSONALIZADOS (LINKS) --- */
 a.custom-btn {
