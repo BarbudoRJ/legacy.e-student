@@ -158,7 +158,26 @@ col_input1, col_input2 = st.columns(2)
 with col_input1:
     nome = st.text_input("Seu Nome/Apelido", placeholder="Ex: João")
 with col_input2:
-    modelo = st.selectbox("Qual sua moto?", ["Selecione...", "Voltz EVS/EV1", "Watts W125", "Shineray SHE/SE", "Super Soco", "Outra Elétrica/Scooter"])
+    # Lista com os principais modelos do mercado + opção de digitar
+    lista_motos = [
+        "Selecione...", 
+        "Voltz EV1", 
+        "Voltz EVS", 
+        "Watts W125", 
+        "Shineray SHE S", 
+        "Shineray SE 1/2",
+        "Super Soco TC/TS", 
+        "GWS K14/K8", 
+        "Gloov",
+        "Outro Modelo (Digitar...)"
+    ]
+    modelo_select = st.selectbox("Qual sua moto?", lista_motos)
+    
+    # Lógica para permitir digitar se não estiver na lista
+    if modelo_select == "Outro Modelo (Digitar...)":
+        modelo = st.text_input("Digite o modelo exato:", placeholder="Ex: Aima, Boram...")
+    else:
+        modelo = modelo_select
 
 # Toggle de Estudante
 st.markdown("<br>", unsafe_allow_html=True)
