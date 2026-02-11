@@ -8,7 +8,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- ESTILIZAÇÃO CSS (VISUAL LEGACY: AZUL NAVAL & LARANJA) ---
+# --- ESTILIZAÇÃO CSS (VISUAL LEGACY: AZUL NAVAL & LARANJA + ANIMAÇÃO VIBRANTE) ---
 st.markdown("""
     <style>
     /* Importando fontes */
@@ -35,9 +35,9 @@ st.markdown("""
         text-transform: uppercase;
     }
     
-    p, div, label, li {
+    p, div, label, li, span {
         font-family: 'Roboto', sans-serif;
-        font-size: 1.1rem;
+        font-size: 1rem;
         color: #E0E0E0;
     }
 
@@ -46,11 +46,12 @@ st.markdown("""
         background-color: var(--card-blue);
         border: 2px solid #1C3D5A;
         border-radius: 12px;
-        padding: 25px;
+        padding: 20px;
         text-align: center;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         margin-bottom: 20px;
         height: 100%;
+        position: relative;
     }
     
     .plan-card:hover {
@@ -61,29 +62,107 @@ st.markdown("""
 
     .plan-title {
         color: #fff !important;
-        font-size: 1.5rem;
+        font-size: 1.4rem;
         margin-bottom: 5px;
+        font-weight: 900;
     }
 
     .plan-subtitle {
         color: #aaa; 
-        font-size: 0.9rem; 
+        font-size: 0.85rem; 
         text-transform: uppercase; 
         letter-spacing: 1px;
+        margin-bottom: 15px;
+        min-height: 40px; /* Alinha altura dos cards */
     }
 
     .price-big {
         font-family: 'Montserrat', sans-serif;
-        font-size: 2.8rem;
+        font-size: 2.5rem;
         font-weight: 900;
         color: #fff;
-        margin-top: 10px;
+        margin: 10px 0;
     }
 
     .price-cents {
         font-size: 1.2rem;
         color: var(--legacy-orange);
         vertical-align: super;
+    }
+
+    /* ANIMAÇÃO DE PULSO (VIBRAÇÃO) */
+    @keyframes pulse-orange {
+        0% { box-shadow: 0 0 0 0 rgba(255, 103, 0, 0.7); transform: scale(1); }
+        50% { box-shadow: 0 0 0 10px rgba(255, 103, 0, 0); transform: scale(1.02); }
+        100% { box-shadow: 0 0 0 0 rgba(255, 103, 0, 0); transform: scale(1); }
+    }
+
+    /* Estilo do Details/Summary (A Caixa Vibrante) */
+    details {
+        margin-top: 15px;
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(0,0,0,0.2);
+        border: 1px solid #333;
+        transition: all 0.3s;
+    }
+
+    summary {
+        list-style: none;
+        padding: 12px;
+        background: linear-gradient(90deg, #1C3D5A 0%, #0A2342 100%);
+        color: #fff;
+        font-weight: bold;
+        cursor: pointer;
+        text-align: center;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        position: relative;
+        /* APLICA A ANIMAÇÃO AQUI */
+        animation: pulse-orange 2s infinite;
+        border: 1px solid var(--legacy-orange);
+        border-radius: 8px;
+    }
+
+    /* Remove a seta padrão do summary */
+    summary::-webkit-details-marker {
+        display: none;
+    }
+
+    /* Estado Aberto (Para a vibração e muda cor) */
+    details[open] summary {
+        animation: none; /* Para de vibrar ao abrir */
+        background: var(--legacy-orange);
+        color: #fff;
+        border-radius: 8px 8px 0 0;
+        border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    details[open] {
+        border-color: var(--legacy-orange);
+    }
+
+    /* Conteúdo Expandido */
+    .details-content {
+        padding: 15px;
+        text-align: left;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        color: #ccc;
+    }
+    
+    .details-content strong {
+        color: var(--legacy-orange);
+        display: block;
+        margin-top: 10px;
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+    }
+
+    .details-content ul {
+        padding-left: 20px;
+        margin: 0;
     }
 
     /* Botões */
@@ -94,11 +173,11 @@ st.markdown("""
         font-weight: 700;
         border: none;
         border-radius: 6px;
-        height: 55px;
+        height: 50px;
         font-family: 'Montserrat', sans-serif;
         text-transform: uppercase;
         letter-spacing: 1px;
-        transition: all 0.3s;
+        margin-top: 15px;
     }
     
     .stButton>button:hover {
@@ -107,43 +186,31 @@ st.markdown("""
         box-shadow: 0 0 15px rgba(255, 103, 0, 0.4);
     }
 
-    /* Link Button Customizado (simulando botão nativo) */
-    a[kind="primary"] {
-        background-color: var(--legacy-orange) !important;
-    }
-
-    /* Ajustes Mobile */
-    [data-testid="column"] {
-        padding: 10px;
+    /* Check Icon na lista principal */
+    .check-icon {
+        color: var(--legacy-orange);
+        margin-right: 8px;
+        font-weight: bold;
     }
     
-    /* Lista de Features */
-    .feature-list {
+    /* Feature List Principal */
+    .main-features {
         text-align: left;
         list-style: none;
         padding: 0;
-        margin-top: 20px;
-        border-top: 1px solid #1C3D5A;
-        padding-top: 15px;
+        margin: 15px 0;
     }
-    .feature-list li {
-        margin-bottom: 10px;
-        font-size: 0.95rem;
-        display: flex;
-        align-items: center;
+    .main-features li {
+        margin-bottom: 8px;
+        font-size: 0.9rem;
     }
-    .check-icon {
-        color: var(--legacy-orange);
-        margin-right: 10px;
-        font-weight: bold;
-    }
+
     </style>
 """, unsafe_allow_html=True)
 
 # --- CABEÇALHO ---
 col1, col2 = st.columns([1, 4])
 with col1:
-    # Usando um ícone laranja para combinar com a nova paleta
     st.image("https://img.icons8.com/ios-filled/100/FF6700/motorcycle.png", width=80) 
 with col2:
     st.title("LEGACY E-STUDENT")
@@ -204,7 +271,7 @@ else:
     cents_power = ",90"
     whatsapp_msg = f"Oi! Quero proteger minha {modelo if modelo != 'Selecione...' else 'moto'} com a tabela oficial. Meu nome é {nome}."
 
-# Link do WhatsApp CORRIGIDO para o número comercial
+# Link do WhatsApp
 whatsapp_number = "+5521980195077"
 whatsapp_link = f"https://wa.me/{whatsapp_number}?text={whatsapp_msg.replace(' ', '%20')}" 
 
@@ -214,43 +281,101 @@ st.markdown("---")
 
 col_plan1, col_plan2 = st.columns(2)
 
+# ==========================================================
 # PLANO 1: LEGACY SPARKY
+# ==========================================================
 with col_plan1:
     st.markdown(f"""
         <div class="plan-card">
             <h3 class="plan-title">LEGACY SPARKY</h3>
-            <p class="plan-subtitle">O Essencial</p>
+            <p class="plan-subtitle">Proteção para motos e ciclomotores elétricos.</p>
+            
             <div class="price-big">R$ {price_sparky}<span class="price-cents">{cents_sparky}</span></div>
-            <p style="font-size: 0.8rem; margin-bottom: 10px;">mensais</p>
-            <ul class="feature-list">
-                <li><span class="check-icon">✓</span> <b>Roubo e Furto</b> (100% FIPE)</li>
-                <li><span class="check-icon">✓</span> <b>Atendimento Nacional</b> 🇧🇷</li>
+            <p style="font-size: 0.8rem;">mensais</p>
+            
+            <!-- Lista Principal (Chamariz) -->
+            <ul class="main-features">
+                <li><span class="check-icon">✓</span> <b>Roubo e Furto</b></li>
                 <li><span class="check-icon">✓</span> <b>Assistência 24h</b> (Até 100km)</li>
-                <li><span class="check-icon">✓</span> <b>2 Guinchos/ano</b> (Pane/Mecânica)</li>
-                <li><span class="check-icon">✓</span> <b>Clube de Vantagens</b></li>
-                <li style="opacity: 0.5;">❌ Colisão / Terceiros</li>
+                <li><span class="check-icon">✓</span> <b>Atendimento RJ</b> (Capital e Interior)</li>
             </ul>
+
+            <!-- Caixa Vibrante com Detalhes -->
+            <details>
+                <summary>👇 VEJA TODAS AS REGRAS 👇<br>(Clique para abrir)</summary>
+                <div class="details-content">
+                    <strong>COBERTURAS INCLUSAS</strong>
+                    • Roubo e Furto;<br>
+                    • Assistência 24h (guincho até 100 km, limitado a 2 utilizações anuais para socorro mecânico e pane elétrica);<br>
+                    • Atendimento em todo o Estado do Rio de Janeiro.
+                    
+                    <strong>COTA DE PARTICIPAÇÃO</strong>
+                    • 10% sobre o valor da Nota Fiscal (Mín. R$ 1.000,00).
+                    
+                    <strong>EXCLUSÕES DE COBERTURA</strong>
+                    • Colisão;<br>
+                    • Furto isolado de peças (bateria, pedal, acessórios);<br>
+                    • Danos por mau uso, recarga inadequada ou sobrecarga;<br>
+                    • Danos à bateria por desgaste natural ou falha de fábrica;<br>
+                    • Atos ilícitos, rachas ou embriaguez.
+                    
+                    <strong>VIGÊNCIA</strong>
+                    • Contrato de 12 meses (renovação automática).<br>
+                    • Inadimplência > 30 dias cancela o contrato.
+                    
+                    <strong>OBSERVAÇÃO</strong>
+                    • Sem FIPE? Vale o valor da Nota Fiscal, cotação de mercado ou laudo técnico.
+                </div>
+            </details>
         </div>
     """, unsafe_allow_html=True)
     st.link_button("QUERO O SPARKY", whatsapp_link, type="primary")
 
+# ==========================================================
 # PLANO 2: LEGACY POWER+
+# ==========================================================
 with col_plan2:
     st.markdown(f"""
         <div class="plan-card" style="border-color: #FF6700;">
-            <div style="background: #FF6700; color: white; font-size: 0.7rem; font-weight: bold; border-radius: 4px; display: inline-block; padding: 2px 8px; margin-bottom: 5px;">MAIS VENDIDO</div>
+            <div style="background: #FF6700; color: white; font-size: 0.7rem; font-weight: bold; border-radius: 4px; display: inline-block; padding: 2px 8px; margin-bottom: 5px;">TOP DE LINHA</div>
             <h3 class="plan-title">LEGACY POWER+</h3>
-            <p class="plan-subtitle">Blindagem Total</p>
+            <p class="plan-subtitle">Proteção completa: Colisão e Terceiros.</p>
+            
             <div class="price-big">R$ {price_power}<span class="price-cents">{cents_power}</span></div>
-            <p style="font-size: 0.8rem; margin-bottom: 10px;">mensais</p>
-            <ul class="feature-list">
-                <li><span class="check-icon">✓</span> <b>Roubo e Furto</b> (100% FIPE)</li>
-                <li><span class="check-icon">✓</span> <b>Atendimento Nacional</b> 🇧🇷</li>
+            <p style="font-size: 0.8rem;">mensais</p>
+            
+            <!-- Lista Principal (Chamariz) -->
+            <ul class="main-features">
+                <li><span class="check-icon">✓</span> <b>Roubo, Furto e Colisão</b></li>
+                <li><span class="check-icon">✓</span> <b>Danos a Terceiros</b> (Até 3k)</li>
                 <li><span class="check-icon">✓</span> <b>Assistência 24h</b> (Até 100km)</li>
-                <li><span class="check-icon">✓</span> <b>2 Guinchos/ano</b> (Pane/Mecânica)</li>
-                <li><span class="check-icon">✓</span> <b>Cobre Terceiros</b></li>
-                <li><span class="check-icon">✓</span> <b>Cobre Colisão</b></li>
             </ul>
+
+            <!-- Caixa Vibrante com Detalhes -->
+            <details>
+                <summary>👇 VEJA TODAS AS REGRAS 👇<br>(Clique para abrir)</summary>
+                <div class="details-content">
+                    <strong>COBERTURAS INCLUSAS</strong>
+                    • Roubo, Furto e Colisão;<br>
+                    • Danos a terceiros (Até R$ 3.000,00);<br>
+                    • Assistência 24h (guincho até 100 km, limitado a 2 utilizações anuais para socorro mecânico e pane elétrica);<br>
+                    • Atendimento em todo o Estado do Rio de Janeiro.
+                    
+                    <strong>COTA DE PARTICIPAÇÃO</strong>
+                    • Próprio: 10% da Nota Fiscal (Mín. R$ 1.000,00);<br>
+                    • Terceiro: 5% da FIPE do terceiro (Mín. R$ 1.000,00).
+                    
+                    <strong>EXCLUSÕES DE COBERTURA</strong>
+                    • Furto isolado de peças (bateria, pedal, acessórios);<br>
+                    • Danos por mau uso, recarga inadequada ou sobrecarga;<br>
+                    • Danos à bateria por desgaste natural ou falha de fábrica;<br>
+                    • Atos ilícitos, rachas ou embriaguez.
+                    
+                    <strong>VIGÊNCIA</strong>
+                    • Contrato de 12 meses (renovação automática).<br>
+                    • Inadimplência > 30 dias cancela o contrato.
+                </div>
+            </details>
         </div>
     """, unsafe_allow_html=True)
     st.link_button("QUERO O POWER+", whatsapp_link)
@@ -262,8 +387,8 @@ st.markdown("### 🧪 POR QUE LEGACY?")
 col_ben1, col_ben2, col_ben3 = st.columns(3)
 
 with col_ben1:
-    st.markdown("**🇧🇷 Cobertura Nacional**")
-    st.caption("Vai viajar? Sua proteção vale em todo o território nacional, não só no Rio.")
+    st.markdown("**🇧🇷 Cobertura RJ**")
+    st.caption("Especialista no Rio de Janeiro (Capital e Interior).")
 
 with col_ben2:
     st.markdown("**🔋 SOS Elétrico**")
@@ -271,13 +396,13 @@ with col_ben2:
 
 with col_ben3:
     st.markdown("**🚀 Sem Burocracia**")
-    st.caption("Cota de participação clara: 10% da FIPE (Min. R$ 1.000).")
+    st.caption("Cota de participação clara e proteção da Nota Fiscal.")
 
 # --- FOOTER ---
 st.markdown("---")
 st.markdown("""
 <div style="text-align: center; color: #777; font-size: 0.8rem;">
     Legacy Benefícios • Nova Iguaçu/RJ<br>
-    A cobertura não abrange furto isolado de peças (ex: baterias/acessórios soltos).
+    Consulte o regulamento completo na adesão.
 </div>
 """, unsafe_allow_html=True)
