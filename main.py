@@ -22,17 +22,33 @@ st.markdown("""
     --neon-green: #39FF14;
 }
 
-/* --- FUNDO COM IMAGEM E TRANSPARÊNCIA --- */
+/* --- FUNDO "CIDADE BINÁRIA" (CSS PURO) --- */
 .stApp {
-    /* IMAGEM DE FUNDO DO USUÁRIO (IMGUR)
-       Converti o link do álbum para link direto (i.imgur.com/....jpeg)
-       Mantive a superposição azul naval com 92% de opacidade para garantir leitura.
-    */
-    background-image: linear-gradient(rgba(5, 22, 38, 0.92), rgba(5, 22, 38, 0.92)), 
-                      url('https://i.imgur.com/6wJOibU.jpeg');
-    background-size: cover;
+    background-color: var(--naval-blue);
+    background-image: 
+        /* Camada 1: Gradiente suave para escurecer o topo (Céu) */
+        linear-gradient(to bottom, rgba(5, 22, 38, 1) 0%, rgba(5, 22, 38, 0.6) 100%),
+        
+        /* Camada 2: O "Skyline" Binário (Barras verticais que parecem prédios/código) */
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 10px,
+            rgba(10, 35, 66, 0.8) 10px, 
+            rgba(10, 35, 66, 0.8) 30px,
+            transparent 30px,
+            transparent 45px,
+            rgba(255, 103, 0, 0.03) 45px, /* Detalhe Laranja Sutil */
+            rgba(255, 103, 0, 0.03) 46px,
+            rgba(10, 35, 66, 0.6) 46px,
+            rgba(10, 35, 66, 0.6) 80px
+        ),
+        
+        /* Camada 3: Grid de Pontos (Matrix style) */
+        radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+        
+    background-size: 100% 100%, 100% 100%, 20px 20px;
     background-attachment: fixed;
-    background-position: center;
     color: var(--text-white);
 }
 
@@ -53,13 +69,12 @@ p, div, label, li, span {
 .hero-title {
     font-family: 'Montserrat', sans-serif;
     font-weight: 900;
-    font-size: 2.5rem; /* Bem grande */
+    font-size: 2.5rem;
     text-transform: uppercase;
     color: var(--legacy-orange);
     text-align: left;
     line-height: 1.1;
     margin-bottom: 20px;
-    /* Efeito Neon Master das Galáxias */
     text-shadow: 0 0 10px rgba(255, 103, 0, 0.5), 
                  0 0 20px rgba(255, 103, 0, 0.3), 
                  0 0 30px rgba(255, 103, 0, 0.1);
@@ -67,7 +82,7 @@ p, div, label, li, span {
 
 /* --- CARDS DOS PLANOS --- */
 .plan-card {
-    background-color: rgba(10, 35, 66, 0.95); /* Leve transparência no card também */
+    background-color: rgba(10, 35, 66, 0.95);
     border: 2px solid #1C3D5A;
     border-radius: 12px;
     padding: 20px;
@@ -311,18 +326,19 @@ with col_input2:
 
 # --- DESTAQUE PARA O TOGGLE DE DESCONTO ---
 # Para decidir qual estilo aplicar (piscando ou fixo), precisamos checar o estado atual
-# Como o Streamlit recarrega o script na interação, podemos usar o session_state ou o valor padrão
 if 'is_student_active' not in st.session_state:
     st.session_state.is_student_active = False
 
-# Define a classe CSS baseada no estado (Off = Pisca, On = Verde Fixo)
+# Define a classe CSS baseada no estado
 box_class = "student-box-on" if st.session_state.is_student_active else "student-box-off"
-txt_cta = "✅ DESCONTO ATIVADO!" if st.session_state.is_student_active else "👇 CLIQUE AQUI: ATIVAR DESCONTO UNIVERSITÁRIO"
+
+# TEXTO ALTERADO CONFORME PEDIDO
+txt_cta = "✅ DESCONTO ATIVADO!" if st.session_state.is_student_active else "👇 ATIVE O SEU DESCONTO UNIVERSITÁRIO"
 
 st.markdown(f'<div class="{box_class}">', unsafe_allow_html=True)
 # O toggle controla a variável de estado
 is_student = st.toggle(txt_cta, value=st.session_state.is_student_active, key="toggle_student")
-# Atualiza o session state para o próximo rerun
+# Atualiza o session state
 st.session_state.is_student_active = is_student
 st.markdown('</div>', unsafe_allow_html=True)
 
