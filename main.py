@@ -9,13 +9,10 @@ st.set_page_config(
 )
 
 # --- ESTILIZAÇÃO CSS (VISUAL LEGACY + ANIMAÇÃO VIBRANTE CORRIGIDA) ---
-# A correção aqui garante que o CSS não seja exibido como texto na tela
 st.markdown("""
 <style>
-/* Importando fontes */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap');
 
-/* Cores da Marca Legacy */
 :root {
     --naval-blue: #051626;
     --card-blue: #0A2342;
@@ -23,13 +20,11 @@ st.markdown("""
     --text-white: #ffffff;
 }
 
-/* Fundo Global */
 .stApp {
     background-color: var(--naval-blue);
     color: var(--text-white);
 }
 
-/* Tipografia */
 h1, h2, h3 {
     font-family: 'Montserrat', sans-serif;
     font-weight: 900 !important;
@@ -99,7 +94,7 @@ p, div, label, li, span {
     100% { box-shadow: 0 0 0 0 rgba(255, 103, 0, 0); transform: scale(1); }
 }
 
-/* Estilo da Caixa Vibrante (Scoped) */
+/* Estilo da Caixa Vibrante */
 .vibrating-box {
     margin-top: 15px;
     border-radius: 8px;
@@ -119,18 +114,15 @@ p, div, label, li, span {
     text-transform: uppercase;
     font-size: 0.9rem;
     position: relative;
-    /* ANIMAÇÃO ATIVA */
     animation: pulse-orange 2s infinite;
     border: 1px solid var(--legacy-orange);
     border-radius: 8px;
 }
 
-/* Remove seta padrão */
 .vibrating-summary::-webkit-details-marker {
     display: none;
 }
 
-/* Quando aberto: para de vibrar e muda estilo */
 .vibrating-box[open] .vibrating-summary {
     animation: none;
     background: var(--legacy-orange);
@@ -159,7 +151,6 @@ p, div, label, li, span {
     font-size: 0.8rem;
 }
 
-/* Botões */
 .stButton>button {
     width: 100%;
     background-color: var(--legacy-orange);
@@ -202,7 +193,6 @@ p, div, label, li, span {
 # --- CABEÇALHO ---
 col1, col2 = st.columns([1, 4])
 with col1:
-    # Substituindo imagem externa por HTML seguro (Emoji Grande)
     st.markdown("<div style='font-size: 70px; text-align: center;'>🏍️</div>", unsafe_allow_html=True)
 with col2:
     st.title("LEGACY E-STUDENT")
@@ -238,7 +228,6 @@ if is_student:
     st.success("✅ Condição Especial Universitária Aplicada!")
     price_sparky, cents_sparky = "71", ",90"
     price_power, cents_power = "107", ",90"
-    # Lógica segura para nome da moto
     moto_msg = modelo if (modelo and modelo != 'Selecione...') else 'moto'
     whatsapp_msg = f"Oi! Sou estudante, vi a tabela Legacy E-Student e quero proteger minha {moto_msg}. Meu nome é {nome}."
 else:
@@ -258,20 +247,18 @@ col_plan1, col_plan2 = st.columns(2)
 
 # PLANO 1: LEGACY SPARKY
 with col_plan1:
-    st.markdown(f"""
+    # AQUI ESTAVA O ERRO: A STRING HTML PRECISA ESTAR SEM ESPAÇOS NA ESQUERDA
+    html_sparky = f"""
 <div class="plan-card">
     <h3 class="plan-title">LEGACY SPARKY</h3>
     <p class="plan-subtitle">Proteção para motos e ciclomotores elétricos.</p>
-    
     <div class="price-big">R$ {price_sparky}<span class="price-cents">{cents_sparky}</span></div>
     <p style="font-size: 0.8rem;">mensais</p>
-    
     <ul class="main-features">
         <li><span class="check-icon">✓</span> <b>Roubo e Furto</b></li>
         <li><span class="check-icon">✓</span> <b>Assistência 24h</b> (Até 100km)</li>
         <li><span class="check-icon">✓</span> <b>Atendimento RJ</b> (Capital e Interior)</li>
     </ul>
-
     <details class="vibrating-box">
         <summary class="vibrating-summary">👇 VEJA TODAS AS REGRAS 👇<br>(Clique para abrir)</summary>
         <div class="details-content">
@@ -279,10 +266,8 @@ with col_plan1:
             • Roubo e Furto;<br>
             • Assistência 24h (guincho até 100 km, limitado a 2 utilizações anuais para socorro mecânico e pane elétrica);<br>
             • Atendimento em todo o Estado do Rio de Janeiro (capital e interior).
-            
             <strong>COTA DE PARTICIPAÇÃO</strong>
             • 10% sobre o valor da Nota Fiscal, com mínimo de R$ 1.000,00 aplicável em caso de reparo ou indenização própria.
-            
             <strong>EXCLUSÕES DE COBERTURA</strong>
             • Colisão;<br>
             • Furto isolado de peças, como bateria, pedal ou acessórios;<br>
@@ -290,37 +275,33 @@ with col_plan1:
             • Participação em atos ilícitos, rachas ou embriaguez;<br>
             • Danos à bateria por desgaste natural ou falhas de fabricação;<br>
             • Danos elétricos ou incêndios causados por recarga com equipamentos não homologados.
-            
             <strong>VIGÊNCIA E CANCELAMENTO</strong>
             • Vigência inicial de 12 (doze) meses, com renovação automática por iguais períodos, salvo manifestação contrária de qualquer das partes com 30 (trinta) dias de antecedência.<br>
             • O contrato poderá ser cancelado em caso de inadimplência superior a 30 dias.<br>
             • 1 dia após o vencimento o veículo encontra-se desprotegido e sem quaisquer coberturas.
-            
             <strong>OBSERVAÇÃO</strong>
             • Na ausência de Tabela FIPE específica para motos elétricas, o valor de referência será o declarado pelo associado, comprovado por nota fiscal de compra, cotação de mercado ou laudo técnico emitido por loja ou oficina credenciada.
         </div>
     </details>
 </div>
-""", unsafe_allow_html=True)
+"""
+    st.markdown(html_sparky, unsafe_allow_html=True)
     st.link_button("QUERO O SPARKY", whatsapp_link, type="primary")
 
 # PLANO 2: LEGACY POWER+
 with col_plan2:
-    st.markdown(f"""
+    html_power = f"""
 <div class="plan-card" style="border-color: #FF6700;">
     <div style="background: #FF6700; color: white; font-size: 0.7rem; font-weight: bold; border-radius: 4px; display: inline-block; padding: 2px 8px; margin-bottom: 5px;">TOP DE LINHA</div>
     <h3 class="plan-title">LEGACY POWER+</h3>
     <p class="plan-subtitle">Proteção completa: Colisão e Terceiros.</p>
-    
     <div class="price-big">R$ {price_power}<span class="price-cents">{cents_power}</span></div>
     <p style="font-size: 0.8rem;">mensais</p>
-    
     <ul class="main-features">
         <li><span class="check-icon">✓</span> <b>Roubo, Furto e Colisão</b></li>
         <li><span class="check-icon">✓</span> <b>Danos a Terceiros</b> (Até 3k)</li>
         <li><span class="check-icon">✓</span> <b>Assistência 24h</b> (Até 100km)</li>
     </ul>
-
     <details class="vibrating-box">
         <summary class="vibrating-summary">👇 VEJA TODAS AS REGRAS 👇<br>(Clique para abrir)</summary>
         <div class="details-content">
@@ -329,18 +310,15 @@ with col_plan2:
             • Danos a terceiros (Até R$ 3.000,00 Três Mil Reais);<br>
             • Assistência 24h (guincho até 100 km, limitado a 2 utilizações anuais para socorro mecânico e pane elétrica);<br>
             • Atendimento em todo o Estado do Rio de Janeiro (capital e interior).
-            
             <strong>COTA DE PARTICIPAÇÃO</strong>
             • 10% sobre o valor da Nota Fiscal (mínimo de R$ 1.000,00) para reparo ou indenização própria;<br>
             • 5% sobre o valor da Fipe do terceiro (mínimo de R$ 1.000,00) para reparo de terceiros.
-            
             <strong>EXCLUSÕES DE COBERTURA</strong>
             • Furto isolado de peças, como bateria, pedal ou acessórios;<br>
             • Danos decorrentes de mau uso, recarga inadequada ou sobrecarga elétrica;<br>
             • Participação em atos ilícitos, rachas ou embriaguez;<br>
             • Danos à bateria por desgaste natural ou falhas de fabricação;<br>
             • Danos elétricos ou incêndios decorrentes de recarga inadequada ou uso de equipamentos não homologados.
-            
             <strong>VIGÊNCIA E CANCELAMENTO</strong>
             • Vigência inicial de 12 (doze) meses, com renovação automática por iguais períodos, salvo manifestação contrária de qualquer das partes com 30 (trinta) dias de antecedência;<br>
             • O contrato poderá ser cancelado em caso de inadimplência superior a 30 dias.<br>
@@ -348,7 +326,8 @@ with col_plan2:
         </div>
     </details>
 </div>
-""", unsafe_allow_html=True)
+"""
+    st.markdown(html_power, unsafe_allow_html=True)
     st.link_button("QUERO O POWER+", whatsapp_link)
 
 # --- BENEFÍCIOS ---
