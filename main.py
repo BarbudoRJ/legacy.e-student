@@ -8,7 +8,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- ESTILIZAÇÃO CSS (VISUAL LEGACY + BOTÕES PERSONALIZADOS) ---
+# --- ESTILIZAÇÃO CSS ---
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap');
@@ -19,6 +19,7 @@ st.markdown("""
     --legacy-orange: #FF6700;
     --text-white: #ffffff;
     --off-white: #F0F0F0;
+    --neon-green: #39FF14;
 }
 
 .stApp {
@@ -124,7 +125,6 @@ a.btn-power {
     background-color: var(--legacy-orange);
     color: #fff;
     border: none;
-    /* Efeito de Retroiluminação Inicial */
     box-shadow: 0 0 20px rgba(255, 103, 0, 0.6); 
     animation: glow-pulse 2s infinite;
 }
@@ -216,23 +216,41 @@ details[open] summary {
     margin-bottom: 4px;
 }
 
-/* --- DESTAQUE TOGGLE ESTUDANTE --- */
-.student-box {
-    background: linear-gradient(135deg, rgba(255, 103, 0, 0.1) 0%, rgba(10, 35, 66, 0.8) 100%);
+/* --- DESTAQUE TOGGLE ESTUDANTE (Animação de Pulso) --- */
+@keyframes pulse-border-orange {
+    0% { border-color: rgba(255, 103, 0, 0.4); box-shadow: 0 0 0 0 rgba(255, 103, 0, 0.4); transform: scale(1); }
+    50% { border-color: #FF6700; box-shadow: 0 0 15px 0 rgba(255, 103, 0, 0.6); transform: scale(1.01); }
+    100% { border-color: rgba(255, 103, 0, 0.4); box-shadow: 0 0 0 0 rgba(255, 103, 0, 0.4); transform: scale(1); }
+}
+
+.student-box-off {
+    background: rgba(10, 35, 66, 0.5);
     border: 2px solid var(--legacy-orange);
     border-radius: 10px;
     padding: 15px;
     margin-top: 20px;
     text-align: center;
-    box-shadow: 0 0 20px rgba(255, 103, 0, 0.15);
+    /* ANIMAÇÃO QUANDO DESLIGADO */
+    animation: pulse-border-orange 1.5s infinite;
 }
-/* Forçar estilo do label do toggle */
+
+.student-box-on {
+    background: rgba(57, 255, 20, 0.1);
+    border: 2px solid var(--neon-green);
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 20px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.2);
+    transition: all 0.5s;
+}
+
+/* Ajuste dos Labels do Streamlit */
 .stCheckbox label p {
     font-size: 1.1rem !important;
     font-weight: bold !important;
     color: #fff !important;
 }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -265,18 +283,28 @@ with col_input2:
     else:
         modelo = modelo_select
 
-# --- LÓGICA DE PRECIFICAÇÃO E MENSAGENS ---
-# (Definida antes para usar nos links dos botões)
-whatsapp_number = "+5521980195077"
-
 # --- DESTAQUE PARA O TOGGLE DE DESCONTO ---
-# Usando um container visual para destacar a opção
-st.markdown('<div class="student-box">', unsafe_allow_html=True)
-is_student = st.toggle("🎓 ATIVAR DESCONTO UNIVERSITÁRIO", value=True)
+# Para decidir qual estilo aplicar (piscando ou fixo), precisamos checar o estado atual
+# Como o Streamlit recarrega o script na interação, podemos usar o session_state ou o valor padrão
+if 'is_student_active' not in st.session_state:
+    st.session_state.is_student_active = False
+
+# Define a classe CSS baseada no estado (Off = Pisca, On = Verde Fixo)
+box_class = "student-box-on" if st.session_state.is_student_active else "student-box-off"
+txt_cta = "✅ DESCONTO ATIVADO!" if st.session_state.is_student_active else "👇 CLIQUE AQUI: ATIVAR DESCONTO UNIVERSITÁRIO"
+
+st.markdown(f'<div class="{box_class}">', unsafe_allow_html=True)
+# O toggle controla a variável de estado
+is_student = st.toggle(txt_cta, value=st.session_state.is_student_active, key="toggle_student")
+# Atualiza o session state para o próximo rerun
+st.session_state.is_student_active = is_student
 st.markdown('</div>', unsafe_allow_html=True)
 
+# --- LÓGICA DE PRECIFICAÇÃO E MENSAGENS ---
+whatsapp_number = "+5521980195077"
+
 if is_student:
-    st.success("✅ Condição Especial Universitária Aplicada!")
+    st.success("🎉 Condição Especial Universitária Aplicada!")
     price_sparky, cents_sparky = "71", ",90"
     price_power, cents_power = "107", ",90"
     moto_msg = modelo if (modelo and modelo != 'Selecione...') else 'moto'
@@ -295,54 +323,47 @@ st.markdown("---")
 # --- EXIBIÇÃO DOS PLANOS ---
 col_plan1, col_plan2 = st.columns(2)
 
+# NOTA: Removi toda a indentação do HTML para evitar que o Streamlit imprima o código
 # PLANO 1: LEGACY SPARKY
 with col_plan1:
     html_sparky = f"""
 <div class="plan-card">
-    <div>
-        <h3 class="plan-title">LEGACY SPARKY</h3>
-        <p class="plan-subtitle">Proteção Essencial (Roubo e Furto)</p>
-        <div class="price-big">R$ {price_sparky}<span class="price-cents">{cents_sparky}</span></div>
-        <p style="font-size: 0.8rem;">mensais</p>
-        
-        <!-- Lista Resumida (Sempre Visível) -->
-        <ul class="main-features">
-            <li><span class="check-icon">✓</span> <b>Roubo e Furto</b> (100% FIPE)</li>
-            <li><span class="check-icon">✓</span> <b>Assistência 24h</b> (100km)</li>
-            <li><span class="check-icon">✓</span> <b>Clube de Vantagens</b></li>
-        </ul>
-
-        <!-- Detalhes Expansíveis -->
-        <details>
-            <summary>👇 VEJA MAIS COBERTURAS E REGRAS</summary>
-            <div class="details-content">
-                <strong>BENEFÍCIOS INCLUSOS</strong>
-                <ul>
-                    <li>Atendimento em todo o Estado do RJ;</li>
-                    <li>Sem Análise de Perfil (Aceita jovens de 18 anos);</li>
-                    <li>Guincho para Pane Elétrica (SOS Bateria);</li>
-                    <li>Clube de Vantagens (Descontos em parceiros).</li>
-                </ul>
-
-                <strong>REGRAS E EXCLUSÕES</strong>
-                <ul>
-                    <li>Cota de Participação: 10% da NF (Mín. R$ 1.000,00);</li>
-                    <li>Limite de 2 usos anuais para guincho (pane/mecânica);</li>
-                    <li>Não cobre: Colisão, Danos a Terceiros, Furto isolado de peças.</li>
-                </ul>
-                
-                <strong>VIGÊNCIA</strong>
-                <ul>
-                    <li>Contrato anual (12 meses).</li>
-                </ul>
-            </div>
-        </details>
-    </div>
-    
-    <!-- Botão Off-White -->
-    <a href="{whatsapp_link}" class="custom-btn btn-sparky" target="_blank">
-        QUERO O SPARKY
-    </a>
+<div>
+<h3 class="plan-title">LEGACY SPARKY</h3>
+<p class="plan-subtitle">Proteção Essencial (Roubo e Furto)</p>
+<div class="price-big">R$ {price_sparky}<span class="price-cents">{cents_sparky}</span></div>
+<p style="font-size: 0.8rem;">mensais</p>
+<ul class="main-features">
+<li><span class="check-icon">✓</span> <b>Roubo e Furto</b> (100% FIPE)</li>
+<li><span class="check-icon">✓</span> <b>Assistência 24h</b> (100km)</li>
+<li><span class="check-icon">✓</span> <b>Clube de Vantagens</b></li>
+</ul>
+<details>
+<summary>👇 VEJA MAIS COBERTURAS E REGRAS</summary>
+<div class="details-content">
+<strong>BENEFÍCIOS INCLUSOS</strong>
+<ul>
+<li>Atendimento em todo o Estado do RJ;</li>
+<li>Sem Análise de Perfil (Aceita jovens de 18 anos);</li>
+<li>Guincho para Pane Elétrica (SOS Bateria);</li>
+<li>Clube de Vantagens (Descontos em parceiros).</li>
+</ul>
+<strong>REGRAS E EXCLUSÕES</strong>
+<ul>
+<li>Cota de Participação: 10% da NF (Mín. R$ 1.000,00);</li>
+<li>Limite de 2 usos anuais para guincho (pane/mecânica);</li>
+<li>Não cobre: Colisão, Danos a Terceiros, Furto isolado de peças.</li>
+</ul>
+<strong>VIGÊNCIA</strong>
+<ul>
+<li>Contrato anual (12 meses).</li>
+</ul>
+</div>
+</details>
+</div>
+<a href="{whatsapp_link}" class="custom-btn btn-sparky" target="_blank">
+QUERO O SPARKY
+</a>
 </div>
 """
     st.markdown(html_sparky, unsafe_allow_html=True)
@@ -351,53 +372,45 @@ with col_plan1:
 with col_plan2:
     html_power = f"""
 <div class="plan-card" style="border-color: #FF6700;">
-    <div>
-        <div style="background: #FF6700; color: white; font-size: 0.7rem; font-weight: bold; border-radius: 4px; display: inline-block; padding: 2px 8px; margin-bottom: 5px;">TOP DE LINHA</div>
-        <h3 class="plan-title">LEGACY POWER+</h3>
-        <p class="plan-subtitle">Blindagem Total (Colisão + Terceiros)</p>
-        <div class="price-big">R$ {price_power}<span class="price-cents">{cents_power}</span></div>
-        <p style="font-size: 0.8rem;">mensais</p>
-        
-        <!-- Lista Resumida (Sempre Visível) -->
-        <ul class="main-features">
-            <li><span class="check-icon">✓</span> <b>Roubo, Furto e Colisão</b></li>
-            <li><span class="check-icon">✓</span> <b>Danos a Terceiros</b> (Até 3k)</li>
-            <li><span class="check-icon">✓</span> <b>Assistência 24h</b> (100km)</li>
-        </ul>
-
-        <!-- Detalhes Expansíveis -->
-        <details>
-            <summary>👇 VEJA MAIS COBERTURAS E REGRAS</summary>
-            <div class="details-content">
-                <strong>BENEFÍCIOS INCLUSOS</strong>
-                <ul>
-                    <li>Cobertura Completa (PT e Parcial);</li>
-                    <li>Danos a Terceiros (Materiais/Corporais até R$ 3.000);</li>
-                    <li>Atendimento em todo o Estado do RJ;</li>
-                    <li>Sem Análise de Perfil;</li>
-                    <li>Clube de Vantagens.</li>
-                </ul>
-
-                <strong>REGRAS E EXCLUSÕES</strong>
-                <ul>
-                    <li>Cota Própria: 10% da NF (Mín. R$ 1.000,00);</li>
-                    <li>Cota Terceiro: 5% da FIPE (Mín. R$ 1.000,00);</li>
-                    <li>Limite de 2 usos anuais para guincho;</li>
-                    <li>Não cobre: Furto isolado de peças (bateria/acessórios).</li>
-                </ul>
-                
-                <strong>VIGÊNCIA</strong>
-                <ul>
-                    <li>Contrato anual (12 meses).</li>
-                </ul>
-            </div>
-        </details>
-    </div>
-    
-    <!-- Botão Laranja Vibrante + Neon -->
-    <a href="{whatsapp_link}" class="custom-btn btn-power" target="_blank">
-        QUERO O POWER+
-    </a>
+<div>
+<div style="background: #FF6700; color: white; font-size: 0.7rem; font-weight: bold; border-radius: 4px; display: inline-block; padding: 2px 8px; margin-bottom: 5px;">TOP DE LINHA</div>
+<h3 class="plan-title">LEGACY POWER+</h3>
+<p class="plan-subtitle">Blindagem Total (Colisão + Terceiros)</p>
+<div class="price-big">R$ {price_power}<span class="price-cents">{cents_power}</span></div>
+<p style="font-size: 0.8rem;">mensais</p>
+<ul class="main-features">
+<li><span class="check-icon">✓</span> <b>Roubo, Furto e Colisão</b></li>
+<li><span class="check-icon">✓</span> <b>Danos a Terceiros</b> (Até 3k)</li>
+<li><span class="check-icon">✓</span> <b>Assistência 24h</b> (100km)</li>
+</ul>
+<details>
+<summary>👇 VEJA MAIS COBERTURAS E REGRAS</summary>
+<div class="details-content">
+<strong>BENEFÍCIOS INCLUSOS</strong>
+<ul>
+<li>Cobertura Completa (PT e Parcial);</li>
+<li>Danos a Terceiros (Materiais/Corporais até R$ 3.000);</li>
+<li>Atendimento em todo o Estado do RJ;</li>
+<li>Sem Análise de Perfil;</li>
+<li>Clube de Vantagens.</li>
+</ul>
+<strong>REGRAS E EXCLUSÕES</strong>
+<ul>
+<li>Cota Própria: 10% da NF (Mín. R$ 1.000,00);</li>
+<li>Cota Terceiro: 5% da FIPE (Mín. R$ 1.000,00);</li>
+<li>Limite de 2 usos anuais para guincho;</li>
+<li>Não cobre: Furto isolado de peças (bateria/acessórios).</li>
+</ul>
+<strong>VIGÊNCIA</strong>
+<ul>
+<li>Contrato anual (12 meses).</li>
+</ul>
+</div>
+</details>
+</div>
+<a href="{whatsapp_link}" class="custom-btn btn-power" target="_blank">
+QUERO O POWER+
+</a>
 </div>
 """
     st.markdown(html_power, unsafe_allow_html=True)
